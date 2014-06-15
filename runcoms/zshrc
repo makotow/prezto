@@ -12,6 +12,27 @@ fi
 
 # Customize to your needs...
 
+setopt nonomatch
+
+## path
+path=(
+       $JAVA_HOME/bin(N-/) \
+       /usr/local/bin(N-/) \
+       $HOME/bin(N-/) \
+       $HOME/.cabal/bin(N-/) \
+       $HOME/.vim/bundle/powerline/scripts(N-/) \
+       $path \
+)
+
+#echo $path
+typeset  -U path
+export path
+
+# fpath
+fpath=(/usr/local/share/zsh-completions(N-/) \
+  /usr/local/share/zsh/site-functions(N-/) \
+  $fpath \
+)
 
 ###############################
 # Alias configuration
@@ -24,7 +45,6 @@ alias lsal='ls -al'
 # path priority
 ###############################
 alias mvn='/usr/local/bin/mvn'
-alias emacs='/usr/local/Cellar/emacs/24.3/Emacs.app/Contents/MacOS/Emacs'
 
 ###############################
 # cover mistype
@@ -45,7 +65,6 @@ alias mv='mv -i'
 alias rm='rm -i'
 alias whence='type -a'
 alias where="command -v"
-alias e='subl'
 alias diff='colordiff'
 # global aliases
 alias -g L='|less'
@@ -54,7 +73,9 @@ alias -g T='|tail'
 alias -g G='|grep'
 alias -g V='|vim -R -'
 
-
+#=============
+# environment
+#=============
 export PAGER='less'
 export LESS='-R -X -i'
 export LESSOPEN='| src-hilite-lesspipe.sh %s'
