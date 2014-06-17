@@ -129,3 +129,5 @@ function do_enter() {
 }
 zle -N do_enter
 bindkey '^m' do_enter
+
+[[ -z "$TMUX" && ! -z "$PS1" ]] && tmux
