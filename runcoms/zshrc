@@ -77,12 +77,20 @@ alias -g V='|vim -R -'
 # environment
 #=============
 export PAGER='less'
-export LESS='-R -X -i'
+export LESS='-R -X -i --no-init --LONG-PROMPT --ignore-case'
 export LESSOPEN='| src-hilite-lesspipe.sh %s'
 export LV='-la -Ou8 -c'
 export JAVA_HOME=`/usr/libexec/java_home`
 export LANG=ja_JP.UTF-8
 export RBENV_ROOT=/usr/local/opt/rbenv
+export EDITOR="vim"
+
+if [ -x "`which go`" ]; then
+  export GOROOT=`go env GOROOT`
+  export GOPATH=$HOME
+  export PATH=$PATH:$GOROOT/bin
+fi
+
 
 # 3秒以上かかった処理は詳細表示
 REPORTTIME=3
@@ -90,9 +98,12 @@ REPORTTIME=3
 #=============================
 # source z.sh
 #=============================
-if which brew > /dev/null;then
-   . `brew --prefix`/etc/profile.d/z.sh
-fi
+which brew > /dev/null 2>&1 && . `brew --prefix`/etc/profile.d/z.sh
+
+#=============================
+# direnv
+#=============================
+which direnv > /dev/null 2>&1 && eval "$(direnv hook zsh)"
 
 #=============================#
 # command-line stack
@@ -130,4 +141,67 @@ function do_enter() {
 zle -N do_enter
 bindkey '^m' do_enter
 
+#===========================#
+# percol
+#===========================#
+function exists { which $1 &> /dev/null }
+
+if exists percol; then
+    function percol_select_history() {
+        local tac
+        exists gtac && tac="gtac" || { exists tac && tac="tac" || { tac="tail -r" } }
+        BUFFER=$(history -n 1 | eval $tac | percol --query "$LBUFFER")
+        CURSOR=$#BUFFER         # move cursor
+        zle -R -c               # refresh
+    }
+
+    zle -N percol_select_history
+    bindkey '^R' percol_select_history
+fi
+zle -N percol-select-history
+
+#===========================#
+# peco
+#===========================#
+function peco-select-history() {
+    local tac
+    if which tac > /dev/null; then
+        tac="tac"
+    else
+        tac="tail -r"
+    fi
+    BUFFER=$(history -n 1 | \
+        eval $tac | \
+        peco --query "$LBUFFER")
+    CURSOR=$#BUFFER
+    zle clear-screen
+}
+zle -N peco-select-history
+bindkey '^r' peco-select-history
+
+function peco-src () {
+    local selected_dir=$(ghq list --full-path | peco --query "$LBUFFER")
+    if [ -n "$selected_dir" ]; then
+        BUFFER="cd ${selected_dir}"
+        zle accept-line
+    fi
+    zle clear-screen
+}
+zle -N peco-src
+bindkey '^S' peco-src
+
+function peco-godoc() {
+    local selected_dir=$(ghq list --full-path | peco --query "$LBUFFER")
+    if [ -n "$selected_dir" ]; then
+        BUFFER="godoc ${selected_dir} | less"
+        zle accept-line
+    fi
+    zle clear-screen
+}
+
+zle -N peco-godoc
+
+#===========================#
+# tmux session
+#===========================#
 [[ -z "$TMUX" && ! -z "$PS1" ]] && tmux
