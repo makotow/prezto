@@ -72,7 +72,7 @@ alias -g H='|head'
 alias -g T='|tail'
 alias -g G='|grep'
 alias -g V='|vim -R -'
-
+alias -g X='|xargs'
 #=============
 # environment
 #=============
@@ -87,8 +87,8 @@ export EDITOR="vim"
 
 if [ -x "`which go`" ]; then
   export GOROOT=`go env GOROOT`
-  export GOPATH=$HOME
-  export PATH=$PATH:$GOROOT/bin
+  export GOPATH=$HOME/.go
+  export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 fi
 
 
