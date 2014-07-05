@@ -85,7 +85,7 @@ export LANG=ja_JP.UTF-8
 export RBENV_ROOT=/usr/local/opt/rbenv
 export EDITOR="vim"
 
-if [ -x "`which go`" ]; then
+if exists go; then
   export GOROOT=`go env GOROOT`
   export GOPATH=$HOME/.go
   export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
@@ -98,13 +98,18 @@ REPORTTIME=3
 #=============================
 # source z.sh
 #=============================
-which brew > /dev/null 2>&1 && . `brew --prefix`/etc/profile.d/z.sh
+if exists brew; then  . `brew --prefix`/etc/profile.d/z.sh; fi
 
 #=============================
 # direnv
 #=============================
-which direnv > /dev/null 2>&1 && eval "$(direnv hook zsh)"
+if exists direnv; then eval "$(direnv hook zsh)"; fi 
 
+#=============================
+# utlity
+#==============================
+function exists { which $1 &> /dev/null }
+#
 #=============================#
 # command-line stack
 #=============================#
@@ -115,7 +120,7 @@ stack: $LBUFFER"
 }
 zle -N show_buffer_stack
 
-if which rbenv > /dev/null;then
+if exists rbenv; then
     eval "$(rbenv init - zsh)";
     . $RBENV_ROOT/completions/rbenv.zsh
 fi
@@ -141,10 +146,10 @@ function do_enter() {
 zle -N do_enter
 bindkey '^m' do_enter
 
+
 #===========================#
 # percol
 #===========================#
-function exists { which $1 &> /dev/null }
 
 if exists percol; then
     function percol_select_history() {
@@ -165,7 +170,7 @@ zle -N percol-select-history
 #===========================#
 function peco-select-history() {
     local tac
-    if which tac > /dev/null; then
+    if exists tac;  then
         tac="tac"
     else
         tac="tail -r"
@@ -174,7 +179,7 @@ function peco-select-history() {
         eval $tac | \
         peco --query "$LBUFFER")
     CURSOR=$#BUFFER
-    zle clear-screen
+   # zle clear-screen
 }
 zle -N peco-select-history
 bindkey '^r' peco-select-history
