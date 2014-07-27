@@ -13,6 +13,7 @@ fi
 # Customize to your needs...
 
 setopt nonomatch
+typeset  -U path cdpath fpath manpath
 
 ## path
 path=(
@@ -23,9 +24,6 @@ path=(
        $HOME/.vim/bundle/powerline/scripts(N-/) \
        $path \
 )
-
-#echo $path
-typeset  -U path
 export path
 
 # fpath
@@ -33,6 +31,8 @@ fpath=(/usr/local/share/zsh-completions(N-/) \
   /usr/local/share/zsh/site-functions(N-/) \
   $fpath \
 )
+autoload -U compinit
+compinit -u
 
 ###############################
 # Alias configuration
@@ -73,6 +73,12 @@ alias -g T='|tail'
 alias -g G='|grep'
 alias -g V='|vim -R -'
 alias -g X='|xargs'
+
+#=============================
+# utlity
+#==============================
+function exists() { which $1 &> /dev/null }
+
 #=============
 # environment
 #=============
@@ -88,7 +94,7 @@ export EDITOR="vim"
 if exists go; then
   export GOROOT=`go env GOROOT`
   export GOPATH=$HOME/.go
-  export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+  #export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 fi
 
 
@@ -103,13 +109,8 @@ if exists brew; then  . `brew --prefix`/etc/profile.d/z.sh; fi
 #=============================
 # direnv
 #=============================
-if exists direnv; then eval "$(direnv hook zsh)"; fi 
+if exists direnv; then eval "$(direnv hook zsh)"; fi
 
-#=============================
-# utlity
-#==============================
-function exists { which $1 &> /dev/null }
-#
 #=============================#
 # command-line stack
 #=============================#
