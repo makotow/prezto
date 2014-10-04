@@ -14,6 +14,28 @@ fi
 
 setopt nonomatch
 typeset  -U path cdpath fpath manpath
+#=============================
+# utlity
+#==============================
+function exists() { which $1 &> /dev/null }
+
+#=============
+# environment
+#=============
+export PAGER='less'
+export LESS='-R -X -i --no-init --LONG-PROMPT --ignore-case'
+export LESSOPEN='| src-hilite-lesspipe.sh %s'
+export LV='-la -Ou8 -c'
+export JAVA_HOME=`/usr/libexec/java_home`
+export LANG=ja_JP.UTF-8
+export RBENV_ROOT=/usr/local/opt/rbenv
+export EDITOR="vim"
+
+if exists go; then
+  export GOROOT=`go env GOROOT`
+  export GOPATH=$HOME/.go:$HOME/godev
+fi
+
 
 ## path
 path=(
@@ -22,6 +44,7 @@ path=(
        $HOME/bin(N-/) \
        $HOME/.cabal/bin(N-/) \
        $HOME/.vim/bundle/powerline/scripts(N-/) \
+       $GOPATH/bin(N-/) \
        $path \
 )
 export path
@@ -66,6 +89,12 @@ alias rm='rm -i'
 alias whence='type -a'
 alias where="command -v"
 alias diff='colordiff'
+
+# alias for git
+alias g='git'
+alias t='tig'
+alias ta='tig --all'
+
 # global aliases
 alias -g L='|less'
 alias -g H='|head'
@@ -73,30 +102,10 @@ alias -g T='|tail'
 alias -g G='|grep'
 alias -g V='|vim -R -'
 alias -g X='|xargs'
-
-#=============================
-# utlity
-#==============================
-function exists() { which $1 &> /dev/null }
-
-#=============
-# environment
-#=============
-export PAGER='less'
-export LESS='-R -X -i --no-init --LONG-PROMPT --ignore-case'
-export LESSOPEN='| src-hilite-lesspipe.sh %s'
-export LV='-la -Ou8 -c'
-export JAVA_HOME=`/usr/libexec/java_home`
-export LANG=ja_JP.UTF-8
-export RBENV_ROOT=/usr/local/opt/rbenv
-export EDITOR="vim"
-
-if exists go; then
-  export GOROOT=`go env GOROOT`
-  export GOPATH=$HOME/.go
-  #export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-fi
-
+alias -g B='`git branch -a | peco --prompt "GIT BRANCH>" | head -n 1 | sed -e "s/^\*\s*//g"`'
+alias -g R='`git remote | peco --prompt "GIT REMOTE>" | head -n 1`'
+alias -g H='`curl -sL https://api.github.com/users/makotow/repos | jq -r ".[].full_name" | peco --prompt "GITHUB REPOS>" | head -n 1`'
+alias -g LR='`git branch -a | peco --query "remotes/ " --prompt "GIT REMOTE BRANCH>" | head -n 1 | sed "s/remotes\/[^\/]*\/\(\S*\)/\1 \0/"`'
 
 # 3秒以上かかった処理は詳細表示
 REPORTTIME=3
