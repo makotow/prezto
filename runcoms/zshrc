@@ -17,7 +17,7 @@ typeset  -U path cdpath fpath manpath
 #=============================
 # utlity
 #==============================
-function exists() { type -a $"1" &> /dev/null; }
+function exists() { type -a $1 &> /dev/null; }
 
 #=============
 # environment
