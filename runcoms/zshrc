@@ -23,7 +23,7 @@ function exists() { type -a $1 &> /dev/null; }
 # environment
 #=============
 export PAGER='less'
-export LESS='-R -X -i --no-init --LONG-PROMPT --ignore-case'
+export LESS='-N -R -X -i --no-init --LONG-PROMPT --ignore-case'
 export LESSOPEN='| src-hilite-lesspipe.sh %s'
 export LV='-la -Ou8 -c'
 export JAVA_HOME=$(/usr/libexec/java_home)
