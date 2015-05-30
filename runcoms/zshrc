@@ -57,6 +57,7 @@ fpath=(/usr/local/share/zsh-completions(N-/) \
 )
 autoload -U compinit
 compinit -u
+zstyle ':completion:*:default' menu select=1
 
 ###############################
 # Alias configuration
